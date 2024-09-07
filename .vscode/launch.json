@@ -19,7 +19,7 @@
             "coreConfigs": [
                 {
                     "coreIndex": 0,
-                    "programBinary": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/minimal",
+                    "programBinary": "${workspaceFolder}/target/{{target}}/debug/{{name}}",
                     "rttEnabled": true,
                     "rttChannelFormats": [
                         {
