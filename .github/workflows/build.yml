@@ -20,17 +20,17 @@ jobs:
             {
               target: thumbv7em-none-eabihf,
               chip: STM32F401RETx,
-              memory: https://github.com/stm32-rs/stm32f4xx-hal/raw/master/memory.x,
+              memory: "https://github.com/stm32-rs/stm32f4xx-hal/raw/master/memory.x",
             },
             {
               target: thumbv6m-none-eabi,
               chip: STM32F072RBTx,
-              memory: https://github.com/stm32-rs/stm32f0xx-hal/raw/master/memory.x,
+              memory: "https://github.com/stm32-rs/stm32f0xx-hal/raw/master/memory.x",
             },
             {
               target: thumbv7em-none-eabihf,
               chip: nRF52840_xxAA,
-              memory: https://github.com/nrf-rs/nrf-hal/raw/master/nrf52840-hal/memory.x,
+              memory: "https://github.com/nrf-rs/nrf-hal/raw/master/nrf52840-hal/memory.x",
             },
           ]
     env:
