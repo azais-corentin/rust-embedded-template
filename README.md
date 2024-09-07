@@ -1,4 +1,6 @@
-# `app-template`
+![build status](https://github.com/azais-corentin/rust-embedded-template/actions/workflows/build.yml/badge.svg)
+
+# `rust-embedded-template`
 
 > Quickly set up a [`probe-rs`] + [`defmt`] + [`flip-link`] embedded project
 
@@ -16,26 +18,26 @@ $ cargo install flip-link
 
 #### 2. `probe-rs`:
 
-``` console
+```console
 $ # make sure to install v0.2.0 or later
 $ cargo install probe-rs --features cli
 ```
 
 #### 3. [`cargo-generate`]:
 
-``` console
+```console
 $ cargo install cargo-generate
 ```
 
 [`cargo-generate`]: https://crates.io/crates/cargo-generate
 
-> *Note:* You can also just clone this repository instead of using `cargo-generate`, but this involves additional manual adjustments.
+> _Note:_ You can also just clone this repository instead of using `cargo-generate`, but this involves additional manual adjustments.
 
 ## Setup
 
 #### 1. Initialize the project template
 
-``` console
+```console
 $ cargo generate \
     --git https://github.com/knurling-rs/app-template \
     --branch main \
@@ -54,7 +56,7 @@ If, for example, you have a nRF52840 Development Kit from one of [our workshops]
 
 [our workshops]: https://github.com/ferrous-systems/embedded-trainings-2020
 
-``` diff
+```diff
  # .cargo/config.toml
  [target.'cfg(all(target_arch = "arm", target_os = "none"))']
 -runner = "probe-rs run --chip {{chip}}"
@@ -73,7 +75,7 @@ runner = ["probe-rs", "run", "--chip", "$CHIP", "--log-format", "{L} {s}"]
 
 In `.cargo/config.toml`, pick the right compilation target for your board.
 
-``` diff
+```diff
  # .cargo/config.toml
  [build]
 -target = "thumbv6m-none-eabi"    # Cortex-M0 and Cortex-M0+
@@ -85,7 +87,7 @@ In `.cargo/config.toml`, pick the right compilation target for your board.
 
 Add the target with `rustup`.
 
-``` console
+```console
 $ rustup target add thumbv7em-none-eabihf
 ```
 
@@ -97,7 +99,7 @@ For the nRF52840 you'll want to use the [`nrf52840-hal`].
 
 [`nrf52840-hal`]: https://crates.io/crates/nrf52840-hal
 
-``` diff
+```diff
  # Cargo.toml
  [dependencies]
 -# some-hal = "1.2.3"
@@ -112,7 +114,7 @@ You will need to not just specify the `rp-hal` HAL, but a BSP (board support cra
 
 Now that you have selected a HAL, fix the HAL import in `src/lib.rs`
 
-``` diff
+```diff
  // my-app/src/lib.rs
 -// use some_hal as _; // memory layout
 +use nrf52840_hal as _; // memory layout
@@ -128,7 +130,6 @@ Some HAL crates require that you manually copy over a file called `memory.x` fro
 
 Not all HALs provide a `memory.x` file, you may need to write it yourself. Check the documentation for the HAL you are using.
 
-
 #### 7. Run!
 
 You are now all set to `cargo-run` your first `defmt`-powered application!
@@ -136,7 +137,7 @@ There are some examples in the `src/bin` directory.
 
 Start by `cargo run`-ning `my-app/src/bin/hello.rs`:
 
-``` console
+```console
 $ # `rb` is an alias for `run --bin`
 $ cargo rb hello
     Finished dev [optimized + debuginfo] target(s) in 0.03s
@@ -152,7 +153,7 @@ $ echo $?
 
 If you're running out of memory (`flip-link` bails with an overflow error), you can decrease the size of the device memory buffer by setting the `DEFMT_RTT_BUFFER_SIZE` environment variable. The default value is 1024 bytes, and powers of two should be used for optimal performance:
 
-``` console
+```console
 $ DEFMT_RTT_BUFFER_SIZE=64 cargo rb hello
 ```
 
@@ -162,10 +163,7 @@ If you are using [rust-analyzer] with VS Code for IDE-like features you can add 
 
 ```json
 {
-    "rust-analyzer.linkedProjects": [
-        "Cargo.toml",
-        "firmware/Cargo.toml",
-    ]
+  "rust-analyzer.linkedProjects": ["Cargo.toml", "firmware/Cargo.toml"]
 }
 ```
 
@@ -179,7 +177,7 @@ The template comes configured for running unit tests and integration tests on th
 Unit tests reside in the library crate and can test private API; the initial set of unit tests are in `src/lib.rs`.
 `cargo test --lib` will run those unit tests.
 
-``` console
+```console
 $ cargo test --lib
 (1/1) running `it_works`...
 └─ app::unit_tests::__defmt_test_entry @ src/lib.rs:33
@@ -191,7 +189,7 @@ Integration tests reside in the `tests` directory; the initial set of integratio
 `cargo test --test integration` will run those integration tests.
 Note that the argument of the `--test` flag must match the name of the test file in the `tests` directory.
 
-``` console
+```console
 $ cargo test --test integration
 (1/1) running `it_works`...
 └─ integration::tests::__defmt_test_entry @ tests/integration.rs:13

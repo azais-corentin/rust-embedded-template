@@ -1,4 +1,4 @@
-name: Build Template
+name: Template builds
 on:
   # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
@@ -13,24 +13,41 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mcu:
+          [
+            {
+              target: thumbv7em-none-eabihf,
+              chip: STM32F401RETx,
+              memory: https://github.com/stm32-rs/stm32f4xx-hal/raw/master/memory.x,
+            },
+            {
+              target: thumbv6m-none-eabi,
+              chip: STM32F072RBTx,
+              memory: https://github.com/stm32-rs/stm32f0xx-hal/raw/master/memory.x,
+            },
+            {
+              target: thumbv7em-none-eabihf,
+              chip: nRF52840_xxAA,
+              memory: https://github.com/nrf-rs/nrf-hal/raw/master/nrf52840-hal/memory.x,
+            },
+          ]
     env:
       PROJECT_NAME: embedded-template-test
-      TARGET: thumbv7em-none-eabihf
-      CHIP: STM32F401RETx
-      MEMORY_X_URL: https://github.com/stm32-rs/stm32f4xx-hal/raw/master/memory.x
     steps:
       - uses: actions/checkout@v4
       - uses: cargo-generate/cargo-generate-action@latest
         with:
           name: ${{ env.PROJECT_NAME }}
-          arguments: "--define chip=${{ env.CHIP }} --define target=${{ env.TARGET }}"
+          arguments: "--define chip=${{ matrix.mcu.chip }} --define target=${{ matrix.mcu.target }}"
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ env.TARGET }}
+          targets: ${{ matrix.mcu.target }}
       - name: Install flip-link using cargo
         run: cargo install flip-link
-      - name: Download memory.x file for STM32F4xx
-        run: curl ${{ env.MEMORY_X_URL}} -o $PROJECT_NAME/memory.x
+      - name: Download memory.x file
+        run: curl ${{ matrix.mcu.memory }} -o $PROJECT_NAME/memory.x
       # we need to move the generated project to a temp folder, away from the template project
       # otherwise `cargo` runs would fail
       # see https://github.com/rust-lang/cargo/issues/9922
