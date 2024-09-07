@@ -1,0 +1,11 @@
+[placeholders]
+chip = { prompt = "Enter probe-rs chip", type = "string" }
+target = { prompt = "Choose target architecture", choices = [
+    "thumbv6m-none-eabi",
+    "thumbv7m-none-eabi",
+    "thumbv7em-none-eabi",
+    "thumbv7em-none-eabihf",
+    "thumbv8m.base-none-eabi",
+    "thumbv8m.main-none-eabi",
+    "thumbv8m.main-none-eabihf",
+], default = "thumbv8m.main-none-eabihf", type = "string" }

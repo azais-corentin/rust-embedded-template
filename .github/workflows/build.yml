@@ -1,0 +1,39 @@
+name: Build Template
+on:
+  # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 18 * * 5"
+  push:
+    branches: ["*"]
+    paths-ignore:
+      - "**/docs/**"
+      - "**.md"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: embedded-template-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cargo-generate/cargo-generate-action@latest
+        with:
+          name: ${{ env.PROJECT_NAME }}
+          arguments: '--define chip="STM32F401RETx" --define target="thumbv7em-none-eabihf"'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv8m.main-none-eabihf
+      - name: Install flip-link using cargo
+        run: cargo install flip-link
+      - name: Install probe-rs
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/probe-rs/probe-rs/releases/latest/download/probe-rs-tools-installer.sh | sh
+      - name: Download memory.x file for STM32F4xx
+        run: curl https://github.com/stm32-rs/stm32f4xx-hal/raw/master/memory.x -o $PROJECT_NAME/memory.x
+      # we need to move the generated project to a temp folder, away from the template project
+      # otherwise `cargo` runs would fail
+      # see https://github.com/rust-lang/cargo/issues/9922
+      - run: |
+          mv $PROJECT_NAME ${{ runner.temp }}/
+          cd ${{ runner.temp }}/$PROJECT_NAME
+          cargo check
