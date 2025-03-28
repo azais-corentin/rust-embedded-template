@@ -9,3 +9,8 @@ target = { prompt = "Choose target architecture", choices = [
     "thumbv8m.main-none-eabi",
     "thumbv8m.main-none-eabihf",
 ], default = "thumbv8m.main-none-eabihf", type = "string" }
+
+[template]
+ignore = [ 
+  ".github",
+]
