@@ -1,5 +1,5 @@
 [placeholders]
-chip = { prompt = "Enter probe-rs chip", type = "string" }
+chip = { prompt = "Enter probe-rs chip (see https://probe.rs/targets/)", type = "string" }
 target = { prompt = "Choose target architecture", choices = [
     "thumbv6m-none-eabi",
     "thumbv7m-none-eabi",
